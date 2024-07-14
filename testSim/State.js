@@ -71,7 +71,9 @@ export class GroundedState extends State {
 	enterState(player) {
 		console.log("Grounded");
 		player.velocity.y = 0;
+		player.isJumping =false;
 		player.substate.enterState(player);
+		//player.update()
 	}
 
 	updateState(player, controller) {
@@ -90,9 +92,12 @@ export class JumpingState extends State {
 
 		let force = new THREE.Vector3(0,500,0);
 		//player.physics();
+		
 		player.applyForce(force);
+		player.isJumping=true;
 
 		player.substate.enterState(player);
+		//player.update();
 	}
 
 	updateState(player, controller) {

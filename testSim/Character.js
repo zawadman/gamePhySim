@@ -23,6 +23,7 @@ export class Character {
 		this.frictionMagnitude = 0;
 
 		this.wanderAngle = null;
+		this.isJumping =false;
 	}
 
 	// update character
@@ -48,6 +49,7 @@ export class Character {
 				xzVelocity.setLength(this.topSpeed);
 				this.velocity.x = xzVelocity.x;
 				this.velocity.z = xzVelocity.z;
+	
 
 			} 
 
@@ -58,8 +60,9 @@ export class Character {
 		}
 		
 		this.checkEdges();
-		this.location.y = this.node.elevation+this.velocity.y;
-		//this.applyForce(this.velocity);
+		if (this.isJumping == false){
+			this.location.y = this.node.elevation;
+		}
 		this.gameObject.position.set(this.location.x,this.location.y, this.location.z);
 		this.acceleration.multiplyScalar(0);
 	
@@ -74,11 +77,12 @@ export class Character {
 		friction.multiplyScalar(this.frictionMagnitude);
 		this.applyForce(friction)
 
+		
 		// gravity
 		if (this.location.y <= this.node.elevation) {
-			//console.log('anti grav');
+			
 			this.velocity.y = 0;
-		} else if (this.location.y > this.node.elevation){
+		} else {
 			console.log("grav working");
 			let gravity = new THREE.Vector3(0,-10,0);
 			this.applyForce(gravity);
@@ -109,7 +113,7 @@ export class Character {
 
 	// Apply force to our character
 	applyForce(force) {
-		//this.physics();
+		
 		// here, we are saying force = force/mass
 		force.divideScalar(this.mass);
 		// this is acceleration + force/mass
@@ -157,7 +161,8 @@ export class Character {
   	}
 
 	  setModel(model) {
-		//model.position.set(0,this.node.elevation,0);
+		
+		this.location.y = this.node.elevation;
 		model.traverse((child) => {
 			if (child.isMesh) {
 				child.castShadow = true;
@@ -179,10 +184,7 @@ export class Character {
 		let scale = this.size/dz;
 		model.scale.set(scale/2, scale/2, scale/2);
 		
-		//model.castShadow =true;
-		//model.recieveShadow=true;
-        //this.gameObject = new THREE.Group();
-        //this.gameObject.add(model);
+
 		return model;
     }
 
